@@ -9,7 +9,7 @@ This is a **ready-to-deploy** supplemental collector for the existing ChatGPT Fr
 - **Coverage is partial, not every company in Germany:** 15 official employer-feed configurations are included (Ashby, Lever, Greenhouse, and Personio). Some feeds can fail or change, and not every one of the 65 employers has an API connection. You can add confirmed Greenhouse/Lever/Ashby/Personio job board identifiers. For broader searches across other companies, turn on Adzuna.
 - **Job links:** the collector no longer appends Adzuna `details/` URLs to your Google Sheet, since they are not verified employer application links. Adzuna is used for Germany-wide discovery; employer-hosted ATS URLs are written to the Sheet. Relevant Adzuna leads lacking official URLs appear in run statistics but are not appended.
 - **Language:** the script excludes obvious *explicit* German-language requirements and requires English-language job-description signals. It cannot guarantee that an English description means the working language is English.
-- **Salary:** screens for roles senior enough to plausibly reach €75,000 and rejects a confirmed max below that threshold. Undisclosed salaries remain eligible. Adzuna predicted salary ranges are not treated as confirmed facts.
+- **Salary:** uses €50,000 gross fixed annual compensation as a discovery floor when a confirmed maximum is published below it; roles with undisclosed pay remain eligible. €75,000–€80,000+ remains the preferred negotiated earnings range for high-fit roles, not a hard search cutoff. Adzuna predicted salary ranges are not treated as confirmed facts.
 
 ## One-time setup
 
