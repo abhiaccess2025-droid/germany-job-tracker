@@ -1,7 +1,7 @@
 {
   "spreadsheet_id": "1Pv1jG6vC9RO9jsdEOf3eivdCFHhyAcXWGCYo9MuTsRs",
   "sheet_tab": "Jobs",
-  "minimum_target_salary_eur": 75000,
+  "minimum_target_salary_eur": 50000,
   "max_new_jobs_per_run": 100,
   "adzuna": {
     "country": "de",
