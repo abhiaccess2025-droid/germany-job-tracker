@@ -83,20 +83,20 @@ def work_style(job, geog):
     return "Not specified"
 
 GERMAN_TEXT_WORDS = re.compile(
-    r"\\b(?:du|dein|deine|deinen|deinem|deiner|dich|dir|uns|unsere|wir|mit|und|für|bei|sowie|"
+    r"\b(?:du|dein|deine|deinen|deinem|deiner|dich|dir|uns|unsere|wir|mit|und|für|bei|sowie|"
     r"deutsch|deutsche|deutschen|kenntnisse|kannst|bringst|erfahrung|bieten|dabei|"
-    r"stellen|verständnis|über|übernimmst|entwickelst|verantwortung|bist)\\b", re.I)
+    r"stellen|verständnis|über|übernimmst|entwickelst|verantwortung|bist)\b", re.I)
 ENGLISH_TEXT_WORDS = re.compile(
-    r"\\b(?:you|your|we|our|with|and|the|for|will|are|have|skills|experience|"
-    r"responsibilities|role|team|work|marketing|customer|business)\\b", re.I)
+    r"\b(?:you|your|we|our|with|and|the|for|will|are|have|skills|experience|"
+    r"responsibilities|role|team|work|marketing|customer|business)\b", re.I)
 GERMAN_LANGUAGE_MANDATORY = re.compile(
-    r"(?:fließend\\w*|fliessend\\w*|sehr gute\\w*|verhandlungssicher\\w*)"
-    r"[^.]{0,55}deutsch(?:kenntnisse|-\\s*und\\s*englischkenntnisse)"
-    r"|(?:kommunikation|kommunizieren)[^.]{0,65}auf\\s+deutsch"
-    r"|deutsch\\s+(?:und|&)\\s+englisch[^.]{0,65}(?:wort|schrift|beherrschst)", re.I)
+    r"(?:fließend\w*|fliessend\w*|sehr gute\w*|verhandlungssicher\w*)"
+    r"[^.]{0,55}deutsch(?:kenntnisse|-\s*und\s*englischkenntnisse)"
+    r"|(?:kommunikation|kommunizieren)[^.]{0,65}auf\s+deutsch"
+    r"|deutsch\s+(?:und|&)\s+englisch[^.]{0,65}(?:wort|schrift|beherrschst)", re.I)
 
 def language_fit(job):
-    full=(job.title or "")+"\\n"+(job.description or "")
+    full=(job.title or "")+"\n"+(job.description or "")
     if OTHER_LANGUAGE.search(job.title or ""):
         return None
     if GERMAN_LANGUAGE_MANDATORY.search(full):
