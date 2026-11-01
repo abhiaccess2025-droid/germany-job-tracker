@@ -21,7 +21,9 @@ class TrackerTest(unittest.TestCase):
         self.assertFalse(suitable(Job('Co','Junior Performance Marketing Manager','Berlin','https://example.com/job/2',LONG_EN)))
         self.assertFalse(suitable(Job('Co','Senior Software Engineer','Berlin','https://example.com/job/3',LONG_EN)))
         self.assertFalse(suitable(Job('Co','Senior Marketing Manager','Paris','https://example.com/job/4',LONG_EN,'FR')))
-        self.assertFalse(suitable(Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/5',LONG_EN, salary_max_eur=70000)))
+        self.assertFalse(suitable(Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/5',LONG_EN, salary_max_eur=45000)))
+        self.assertTrue(suitable(Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/7',LONG_EN, salary_max_eur=70000)))
+        self.assertTrue(suitable(Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/8',LONG_EN, salary_max_eur=None)))
         self.assertFalse(suitable(Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/6',LONG_EN+' Fluent German required.')))
     def test_duplicate_url(self):
         job=Job('Co','Senior Marketing Manager','Berlin','https://example.com/job/123?utm_source=twitter',LONG_EN)
