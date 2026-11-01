@@ -215,6 +215,36 @@
       "company": "Foundry",
       "type": "greenhouse",
       "board": "foundry"
+    },
+    {
+      "company": "WPP Media",
+      "type": "greenhouse",
+      "board": "wppmedia"
+    },
+    {
+      "company": "Omnicom Media",
+      "type": "greenhouse",
+      "board": "mediabrands"
+    },
+    {
+      "company": "Reolink",
+      "type": "greenhouse",
+      "board": "reolink"
+    },
+    {
+      "company": "Eye Security",
+      "type": "ashby",
+      "board": "eye-security"
+    },
+    {
+      "company": "BLP Digital",
+      "type": "ashby",
+      "board": "blp-digital"
+    },
+    {
+      "company": "JUPUS",
+      "type": "ashby",
+      "board": "jupus"
     }
   ],
   "preferred_regions": {
