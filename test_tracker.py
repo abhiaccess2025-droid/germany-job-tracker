@@ -2,7 +2,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from tracker import Job, suitable, german_required, germany_location, deduplicate, CONFIG, clean_url
+from tracker import Job, suitable, german_required, germany_location, deduplicate, CONFIG, clean_url, verify_live_job_url
 
 LONG_EN='We are looking for a talented marketing leader to join our team. Your responsibilities include growth strategy, acquisition, managing budgets and agencies. You will work with a global team and you have significant experience. English is our working language.'
 class TrackerTest(unittest.TestCase):
@@ -28,6 +28,36 @@ class TrackerTest(unittest.TestCase):
         existing=[['Co','Senior Marketing Manager','Berlin','https://example.com/job/123']]
         self.assertEqual(deduplicate([job],existing,100),[])
         self.assertEqual(clean_url(job.url),'https://example.com/job/123')
+    def test_live_job_url_requires_official_host(self):
+        from unittest.mock import Mock
+        job = Job('Co','Senior Marketing Manager','Berlin',
+                  'https://www.adzuna.de/details/123',LONG_EN,source='adzuna')
+        self.assertFalse(verify_live_job_url(Mock(),job))
+
+    def test_live_job_url_open_and_closed(self):
+        from unittest.mock import Mock
+        url='https://jobs.lever.co/sample/abc123'
+        job=Job('Co','Senior Marketing Manager','Berlin',url,LONG_EN,source='lever')
+        response=Mock(url=url,text='<html><body><h1>Senior Marketing Manager</h1>' +
+                      LONG_EN + '</body></html>')
+        response.raise_for_status.return_value=None
+        session=Mock()
+        session.get.return_value=response
+        self.assertTrue(verify_live_job_url(session,job))
+        response.text='<html><body><h1>Senior Marketing Manager</h1>' + LONG_EN + ' This role has been filled.</body></html>'
+        self.assertFalse(verify_live_job_url(session,job))
+
+    def test_live_job_personio_host(self):
+        from unittest.mock import Mock
+        url='https://eurowings-digital.jobs.personio.com/job/123?language=en'
+        job=Job('Eurowings','Senior Marketing Manager','Cologne',url,LONG_EN,source='personio')
+        response=Mock(url=url,text='<html><body><h1>Senior Marketing Manager</h1>' +
+                      LONG_EN + '</body></html>')
+        response.raise_for_status.return_value=None
+        session=Mock()
+        session.get.return_value=response
+        self.assertTrue(verify_live_job_url(session,job))
+
     def test_exact_columns(self):
         self.assertEqual(len(Job('X','Y','Z','https://example.com').row()),4)
     def test_employer_count(self):
