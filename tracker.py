@@ -283,7 +283,7 @@ def verify_live_job_url(session, job: Job) -> bool:
     """
     parsed = urlparse(job.url)
     host = (parsed.hostname or "").lower()
-    is_personio = bool(re.fullmatch(r"[a-z0-9-]+\\.jobs\\.personio\\.(?:com|de)", host))
+    is_personio = bool(re.fullmatch(r"[a-z0-9-]+\.jobs\.personio\.(?:com|de)", host))
     if parsed.scheme != "https" or not (host in ATS_HOSTS or is_personio):
         return False
     if job.source not in {"lever", "ashby", "greenhouse", "personio"}:
@@ -299,7 +299,7 @@ def verify_live_job_url(session, job: Job) -> bool:
         rendered = strip_html(response.text or "")
         if len(rendered) < 90 or CLOSED_JOB_WORDING.search(rendered):
             return False
-        if re.search(r"\\b(?:404|page not found|job not found|vacancy not found)\\b",
+        if re.search(r"\b(?:404|page not found|job not found|vacancy not found)\b",
                      rendered[:700], re.I):
             return False
         return True
