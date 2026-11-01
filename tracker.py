@@ -259,6 +259,53 @@ def deduplicate(jobs: list[Job], existing_rows: list[list[str]], max_new: int):
             break
     return new
 
+# Only these official ATS hosts are accepted for automatic insertion.
+# Discovery sites such as Adzuna are not the final employer application page.
+ATS_HOSTS = {"jobs.lever.co", "jobs.eu.lever.co", "jobs.ashbyhq.com",
+             "boards.greenhouse.io", "job-boards.greenhouse.io"}
+
+CLOSED_JOB_WORDING = re.compile(
+    r"(?:this (?:job|position|role|vacancy) (?:is|has been) (?:no longer available|closed|filled)"
+    r"|this (?:job|position|role|vacancy) is no longer accepting applications"
+    r"|(?:job|position|role) has been filled"
+    r"|(?:applications|application) (?:are|is) now closed"
+    r"|(?:we are|we're) no longer accepting applications"
+    r"|(?:job|position|role) (?:no longer exists|has expired)"
+    r"|the job you are looking for is no longer available)",
+    re.I)
+
+def verify_live_job_url(session, job: Job) -> bool:
+    """Conservatively verify an employer ATS listing before appending it.
+
+    A 200 response is not proof that hiring remains open; we also check for
+    explicit closed-job wording and a plausible vacancy page. Non-ATS links
+    are withheld rather than misrepresented as employer application URLs.
+    """
+    parsed = urlparse(job.url)
+    host = (parsed.hostname or "").lower()
+    is_personio = bool(re.fullmatch(r"[a-z0-9-]+\\.jobs\\.personio\\.(?:com|de)", host))
+    if parsed.scheme != "https" or not (host in ATS_HOSTS or is_personio):
+        return False
+    if job.source not in {"lever", "ashby", "greenhouse", "personio"}:
+        return False
+    try:
+        response = session.get(job.url, timeout=HTTP_TIMEOUT, headers=HEADERS,
+                               allow_redirects=True)
+        response.raise_for_status()
+        final = urlparse(response.url)
+        # Catch redirects to homepages or unrelated domains.
+        if final.scheme != "https" or not final.hostname:
+            return False
+        rendered = strip_html(response.text or "")
+        if len(rendered) < 90 or CLOSED_JOB_WORDING.search(rendered):
+            return False
+        if re.search(r"\\b(?:404|page not found|job not found|vacancy not found)\\b",
+                     rendered[:700], re.I):
+            return False
+        return True
+    except (requests.RequestException, ValueError):
+        return False
+
 def sheets_session():
     if Credentials is None:
         raise RuntimeError('Please install google-auth')
@@ -325,12 +372,18 @@ def main():
     if os.environ.get('GOOGLE_SERVICE_ACCOUNT_JSON'):
         sheet=sheets_session()
         existing=read_sheet(sheet,CONFIG)
-    new=deduplicate(filtered,existing,CONFIG['max_new_jobs_per_run'])
+    proposed=deduplicate(filtered,existing,CONFIG['max_new_jobs_per_run'])
+    # HTTP-check each official ATS application page before inserting new rows.
+    # Never treat a closed-job page or an aggregator detail page as a vacancy.
+    new=[j for j in proposed if verify_live_job_url(session,j)]
+    links_rejected=len(proposed)-len(new)
     summary={'official_feeds_checked':checked,'official_feeds_failed':failed,
              'source_jobs_seen':len(jobs),'jobs_passing_filters':len(filtered),
              'adzuna_relevant_candidates':adzuna_candidates,
              'adzuna_skipped_unverified_links':adzuna_unverified_links,
-             'new_jobs_selected':len(new),'existing_sheet_rows':len(existing)}
+             'new_jobs_selected':len(new),'links_rejected_or_unverified':links_rejected,
+             'existing_sheet_rows':len(existing),
+             'existing_rows_not_revalidated':len(existing)}
     if sheet:
         summary['rows_appended']=append_sheet(sheet,CONFIG,new)
     else:
