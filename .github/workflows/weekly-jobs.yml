@@ -1,4 +1,5 @@
 name: Bot 1 - NRW Job Scanner
+# Manual execution requested 2026-11-01; schedule and scanner configuration unchanged.
 on:
   workflow_dispatch:
   push:
