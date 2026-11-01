@@ -32,6 +32,14 @@ Primary locations are Wuppertal, Bonn, Cologne/Köln, Düsseldorf, Essen and Dui
 - Priority score is an explainable rule-based estimate based on role fit, job level, NRW/remote location, language indication, work style and any confirmed salary maximum. It is not an AI assessment of the full CV.
 - An English-language job advert does **not** prove that German is optional; ambiguous jobs are marked for confirmation. Roles explicitly demanding fluent/business German are filtered.
 
+## Full source audit
+
+The **Scan Audit** tab in the existing Google workbook contains a **latest-run snapshot** with one row for *every API listing retrieved*, including out-of-area vacancies, nonmarketing titles, junior jobs, German-required jobs, duplicates and unverified Adzuna leads. Its 10 columns include scan time, source, company, job title, location, inferred working style, decision, reason, **unverified source link**, and source-provided annual salary maximum where available.
+
+**Important:** A link shown in Scan Audit is a raw source link, **not** a verified live employer application. Use `Job Tracker` for shortlisted opportunities only. Filtering Scan Audit by `Screening Result` exposes `Excluded`, `Unverified lead`, `Already tracked`, `Added this scan`, `Link unverified`, and `Duplicate / skipped` statuses. The Audit tab is replaced with each new scan; it does not append permanently.
+
+For historic review, each GitHub Actions run after the feature was added uploads `scan_audit.csv` as a downloadable artifact retained for **30 days** under the workflow run's **Artifacts** section. Older runs before implementation counted sources but did not persist each result, so their exact raw lists cannot be reconstructed.
+
 ## Source quality and limits
 
 There are currently 28 configured ATS employer feeds (Ashby, Lever, Greenhouse and Personio). They are **not** all 65 saved target employers or all vacancies across NRW.
