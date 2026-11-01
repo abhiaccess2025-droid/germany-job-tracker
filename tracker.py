@@ -33,16 +33,19 @@ HEADERS = {"User-Agent": "PersonalJobTracker/1.0 (read-only public vacancies)", 
 
 # No assertions of language eligibility are made based on the language of the
 # advertisement alone. This is a candidate filter, not a final eligibility check.
-ROLE_WORDS = re.compile(r"\b(marketing|marketer|growth|acquisition|programmatic|paid\s*(?:media|search|social)|retail\s*media|media\s*(?:strategy|planning|manager|lead|director|buyer)|advertising|demand\s*generation|crm|customer\s*marketing|martech|marketing\s*technology|ecommerce|e-commerce|performance\s*media)\b", re.I)
+ROLE_WORDS = re.compile(r"\b(marketing|marketer|growth|acquisition|programmatic|paid\s*(?:media|search|social)|retail\s*media|media\s*(?:strategy|planning|manager|lead|director|buyer)|advertising|demand\s*generation|crm|customer\s*marketing|martech|marketing\s*technology|ecommerce|e-commerce|performance\s*media|lifecycle|customer\s*retention|go.to.market|gtm|brand\s*strategy)\b", re.I)
 SENIOR_WORDS = re.compile(r"\b(senior|sr\.?|lead|head|director|principal|vice president|vp|global|regional|manager|leiter|leitung)\b", re.I)
 JUNIOR_WORDS = re.compile(r"\b(intern(?:ship)?|werkstudent|working student|trainee|ausbildung|apprentice|graduate program|junior|assistant|volunteer|student job)\b", re.I)
 ENGLISH_WORDS = re.compile(r"\b(english|you will|your role|your responsibilities|requirements|what you bring|our team|work with|we are looking|your experience|you have|we offer)\b", re.I)
+ENGLISH_FUNCTION_WORDS = re.compile(r"\b(the|and|with|your|you|our|will|we|have|are|this|that|for|from|teams|their)\b", re.I)
 GERMAN_REQ = [
     re.compile(r"\b(fluent|professional|business[- ]fluent|native|advanced|excellent|strong|proficient|working|business level)\s+(?:written and spoken\s+)?german\b", re.I),
     re.compile(r"\b(?:german|deutsch)\s+(?:language\s+)?(?:fluency|proficiency|skills|knowledge|required|mandatory|at (?:least|minimum) [bc][12]|[bc][12])\b", re.I),
     re.compile(r"\b(?:flie(?:ss|ß)end\w*|verhandlungssicher\w*|sehr gute\w*|exzellente\w*|ausgezeichnete\w*)\s+deutschkenntnisse\b", re.I),
     re.compile(r"\bdeutschkenntnisse\s+(?:auf\s+)?(?:niveau\s+)?[bc][12]\b", re.I),
     re.compile(r"\b(?:german|deutsch)\s+(?:and\s+)?english\s+(?:is|are)\s+(?:required|mandatory|essential)\b", re.I),
+    re.compile(r"\b(?:communicative|conversational|intermediate|good)\s+german\s+(?:skills|knowledge|language)\b", re.I),
+    re.compile(r"\b(?:kommunikative|gute|solide)\s+deutschkenntnisse\b", re.I),
 ]
 GERMAN_NOT_REQUIRED = re.compile(r"\b(german\s+(?:is\s+)?(?:not\s+required|only\s+a\s+plus|nice\s+to\s+have|optional)|no\s+german\s+required|deutschkenntnisse\s+(?:von\s+vorteil|nicht\s+erforderlich))\b", re.I)
 GERMANY_MARKERS = re.compile(r"\b(germany|deutschland|bundesweit|remote\s*[-–]\s*de|remote\s+germany|de\s*[-/]\s*remote)\b", re.I)
@@ -115,7 +118,10 @@ def suitable(job: Job, trust_de=False) -> bool:
         return False
     # English description or explicit English required; no German is NOT
     # sufficient proof of an English-speaking team, so user must confirm.
-    if len(desc) < 120 or len(ENGLISH_WORDS.findall(desc)) < 2:
+    # English-language indicators without requiring two stock recruiting phrases.
+    # Adzuna summaries are truncated, so no automated language check is definitive.
+    if len(desc) < 80 or not (len(ENGLISH_WORDS.findall(desc)) >= 1 or
+                              len(ENGLISH_FUNCTION_WORDS.findall(desc)) >= 6):
         return False
     if job.salary_max_eur is not None and job.salary_max_eur < CONFIG["minimum_target_salary_eur"]:
         return False
@@ -159,7 +165,12 @@ def lever_feed(session, feed):
     while offset < 1000:
         batch=get_json(session, f"{base}/v0/postings/{feed['board']}", {"mode":"json", "limit":100,"skip":offset})
         for x in batch:
-            out.append(Job(feed['company'],x.get('text',''),(x.get('categories') or {}).get('location',''),x.get('hostedUrl',''),x.get('descriptionPlain',''),'',None,'lever'))
+            descriptions = [x.get('descriptionPlain') or x.get('description') or '',
+                            x.get('additionalPlain') or '',
+                            x.get('openingPlain') or '']
+            descriptions += [item.get('content', '') for item in (x.get('lists') or []) if isinstance(item, dict)]
+            out.append(Job(feed['company'],x.get('text',''),(x.get('categories') or {}).get('location',''),
+                           x.get('hostedUrl',''), '\n'.join(descriptions),'',None,'lever'))
         if len(batch)<100: break
         offset += 100
     return out
@@ -293,9 +304,21 @@ def main():
             failed.append(f"{f['company']}: {type(exc).__name__}")
     jobs.extend(adzuna_search(session))
     filtered=[]
+    adzuna_candidates = 0
+    adzuna_unverified_links = 0
     for j in jobs:
-        if suitable(j,trust_de=(j.source=='adzuna')):
-            filtered.append(j)
+        if not suitable(j, trust_de=(j.source == 'adzuna')):
+            continue
+        if j.source == 'adzuna':
+            adzuna_candidates += 1
+            # The API's redirect_url frequently points to adzuna.de/details,
+            # which is NOT the employer's application URL. We use Adzuna for
+            # discovery but never place unverifiable aggregator URLs in the sheet.
+            host = urlparse(j.url).hostname or ''
+            if host.endswith('adzuna.de') or host.endswith('adzuna.com'):
+                adzuna_unverified_links += 1
+                continue
+        filtered.append(j)
     # Prefer official sources over aggregate sources when the same role is seen twice.
     filtered.sort(key=lambda j:(j.source=='adzuna',j.company.lower(),j.title.lower()))
     existing=[]; sheet=None
@@ -305,6 +328,8 @@ def main():
     new=deduplicate(filtered,existing,CONFIG['max_new_jobs_per_run'])
     summary={'official_feeds_checked':checked,'official_feeds_failed':failed,
              'source_jobs_seen':len(jobs),'jobs_passing_filters':len(filtered),
+             'adzuna_relevant_candidates':adzuna_candidates,
+             'adzuna_skipped_unverified_links':adzuna_unverified_links,
              'new_jobs_selected':len(new),'existing_sheet_rows':len(existing)}
     if sheet:
         summary['rows_appended']=append_sheet(sheet,CONFIG,new)
