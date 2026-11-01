@@ -210,15 +210,42 @@ def adzuna_search(session):
 def unique_key(job: Job):
     return (norm(job.company).strip(), norm(job.title).strip(), norm(job.location).strip())
 
+def broad_germany_location(location: str) -> bool:
+    """Countrywide location labels can duplicate a specific-city job listing."""
+    s = norm(location).strip()
+    return s in {"deutschland", "germany", "bundesweit", "remote germany",
+                 "germany remote", "remote deutschland", "deutschland remote"}
+
 def deduplicate(jobs: list[Job], existing_rows: list[list[str]], max_new: int):
-    seen_urls={clean_url(r[3]) for r in existing_rows if len(r)>3 and r[3]}
-    seen_keys={(norm(r[0]).strip(),norm(r[1]).strip(),norm(r[2]).strip()) for r in existing_rows if len(r)>2}
-    new=[]
+    seen_urls = {clean_url(r[3]) for r in existing_rows if len(r) > 3 and r[3]}
+    seen_keys = {(norm(r[0]).strip(), norm(r[1]).strip(), norm(r[2]).strip())
+                 for r in existing_rows if len(r) > 2}
+    seen_roles = {}
+    for r in existing_rows:
+        if len(r) > 2:
+            role = (norm(r[0]).strip(), norm(r[1]).strip())
+            seen_roles.setdefault(role, set()).add(norm(r[2]).strip())
+    new = []
     for j in jobs:
-        url=clean_url(j.url); key=unique_key(j)
-        if url in seen_urls or key in seen_keys: continue
-        new.append(j);seen_urls.add(url);seen_keys.add(key)
-        if len(new)>=max_new: break
+        url = clean_url(j.url)
+        key = unique_key(j)
+        role = (key[0], key[1])
+        locations = seen_roles.get(role, set())
+        # A broad "Germany" listing and a city listing of the same
+        # company/title usually represent one vacancy from different feeds.
+        # Keep genuinely distinct city-specific openings.
+        is_cross_source_duplicate = bool(locations) and (
+            broad_germany_location(j.location) or
+            any(broad_germany_location(loc) for loc in locations)
+        )
+        if url in seen_urls or key in seen_keys or is_cross_source_duplicate:
+            continue
+        new.append(j)
+        seen_urls.add(url)
+        seen_keys.add(key)
+        seen_roles.setdefault(role, set()).add(key[2])
+        if len(new) >= max_new:
+            break
     return new
 
 def sheets_session():
