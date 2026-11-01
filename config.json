@@ -1,0 +1,36 @@
+{
+  "spreadsheet_id": "1Pv1jG6vC9RO9jsdEOf3eivdCFHhyAcXWGCYo9MuTsRs",
+  "sheet_tab": "Jobs",
+  "minimum_target_salary_eur": 75000,
+  "max_new_jobs_per_run": 100,
+  "adzuna": {
+    "country": "de",
+    "results_per_page": 35,
+    "pages_per_query": 1,
+    "queries": [
+      "Senior Performance Marketing Manager",
+      "Head of Growth",
+      "Programmatic Advertising",
+      "Digital Media Strategy",
+      "Senior Digital Marketing Manager",
+      "Head of Digital Marketing",
+      "Retail Media Manager",
+      "Acquisition Marketing Manager",
+      "Senior Growth Marketing Manager",
+      "Marketing Technology Manager",
+      "Demand Generation Manager",
+      "Marketing Director",
+      "Senior Media Manager",
+      "Paid Media Lead"
+    ]
+  },
+  "employers": [
+    "DeepL", "SumUp", "Trusted Shops", "The Customization Group", "SoSafe", "1NCE", "Cofinity-X", "Dyson", "Barilla", "Intersnack", "Toyota Deutschland", "Ford Germany", "Red Bull", "Eurowings", "REWE Group", "OBI", "RTL Deutschland / RTL+", "FOND OF", "Mollie", "LANXESS", "igus", "TÜV Rheinland", "Koelnmesse", "Zurich Insurance", "RIMOWA", "Vodafone Germany", "Vorwerk", "Henkel", "C&A", "trivago",
+    "L'Oréal", "Douglas Group", "StepStone", "ERGO Group", "Redcare Pharmacy", "Hyundai", "Bayer", "Deutsche Telekom", "DHL Group", "Deichmann", "ALDI Nord", "E.ON", "ALDI Süd", "GEERS / Sonova", "schauinsland-reisen", "Dr. Oetker", "SNIPES", "Arla Foods", "Primark", "H&M", "Amazon", "Mondelēz International", "Sparkasse (regional NRW)", "Bain & Company", "Boston Consulting Group", "PwC", "Deloitte", "Accenture", "McKinsey & Company", "Nestlé", "Ferrero", "Müller drugstore", "Takko Fashion", "Tchibo", "Peek & Cloppenburg Düsseldorf"
+  ],
+  "official_feeds": [
+    {"company": "DeepL", "type": "ashby", "board": "DeepL"},
+    {"company": "SoSafe", "type": "ashby", "board": "sosafe"},
+    {"company": "Eurowings", "type": "personio", "board": "eurowings-digital.jobs.personio.com"}
+  ]
+}
