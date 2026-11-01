@@ -1,6 +1,12 @@
 name: Weekly Germany Job Tracker
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - tracker.py
+      - config.json
+      - .github/workflows/weekly-jobs.yml
   schedule:
     - cron: '30 23 * * 5'
       timezone: 'Europe/Berlin'
@@ -11,15 +17,17 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: pip
       - run: pip install -r requirements.txt
-      - name: Scan job APIs and append matching jobs
+      - name: Run collector tests
+        run: python -m unittest discover -p 'test*.py' -v
+      - name: Scan job APIs and append verified matching jobs
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
