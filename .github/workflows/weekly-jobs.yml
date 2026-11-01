@@ -10,6 +10,7 @@ on:
       - tracker.py
       - config.json
       - test_bot1.py
+      - test_audit.py
       - .github/workflows/weekly-jobs.yml
   schedule:
     - cron: '0 2 * * 6'
@@ -41,3 +42,11 @@ jobs:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
         run: python tracker_v2.py
+      - name: Save all scanned source listings as downloadable CSV
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-audit-${{ github.run_number }}
+          path: scan_audit.csv
+          if-no-files-found: warn
+          retention-days: 30
