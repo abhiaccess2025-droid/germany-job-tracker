@@ -5,8 +5,8 @@
   "max_new_jobs_per_run": 100,
   "adzuna": {
     "country": "de",
-    "results_per_page": 35,
-    "pages_per_query": 1,
+    "results_per_page": 50,
+    "pages_per_query": 2,
     "queries": [
       "Senior Performance Marketing Manager",
       "Head of Growth",
@@ -21,16 +21,164 @@
       "Demand Generation Manager",
       "Marketing Director",
       "Senior Media Manager",
-      "Paid Media Lead"
-    ]
+      "Paid Media Lead",
+      "Performance Marketing Lead",
+      "Head of Acquisition",
+      "Growth Marketing Lead",
+      "Digital Marketing Lead",
+      "Marketing & Growth Director",
+      "Director Paid Media",
+      "Programmatic Manager",
+      "Head of Media",
+      "Digital Acquisition Manager",
+      "B2B Growth Marketing",
+      "Marketing Analytics Lead",
+      "Global Media Manager"
+    ],
+    "discover_only": true
   },
   "employers": [
-    "DeepL", "SumUp", "Trusted Shops", "The Customization Group", "SoSafe", "1NCE", "Cofinity-X", "Dyson", "Barilla", "Intersnack", "Toyota Deutschland", "Ford Germany", "Red Bull", "Eurowings", "REWE Group", "OBI", "RTL Deutschland / RTL+", "FOND OF", "Mollie", "LANXESS", "igus", "TÜV Rheinland", "Koelnmesse", "Zurich Insurance", "RIMOWA", "Vodafone Germany", "Vorwerk", "Henkel", "C&A", "trivago",
-    "L'Oréal", "Douglas Group", "StepStone", "ERGO Group", "Redcare Pharmacy", "Hyundai", "Bayer", "Deutsche Telekom", "DHL Group", "Deichmann", "ALDI Nord", "E.ON", "ALDI Süd", "GEERS / Sonova", "schauinsland-reisen", "Dr. Oetker", "SNIPES", "Arla Foods", "Primark", "H&M", "Amazon", "Mondelēz International", "Sparkasse (regional NRW)", "Bain & Company", "Boston Consulting Group", "PwC", "Deloitte", "Accenture", "McKinsey & Company", "Nestlé", "Ferrero", "Müller drugstore", "Takko Fashion", "Tchibo", "Peek & Cloppenburg Düsseldorf"
+    "DeepL",
+    "SumUp",
+    "Trusted Shops",
+    "The Customization Group",
+    "SoSafe",
+    "1NCE",
+    "Cofinity-X",
+    "Dyson",
+    "Barilla",
+    "Intersnack",
+    "Toyota Deutschland",
+    "Ford Germany",
+    "Red Bull",
+    "Eurowings",
+    "REWE Group",
+    "OBI",
+    "RTL Deutschland / RTL+",
+    "FOND OF",
+    "Mollie",
+    "LANXESS",
+    "igus",
+    "TÜV Rheinland",
+    "Koelnmesse",
+    "Zurich Insurance",
+    "RIMOWA",
+    "Vodafone Germany",
+    "Vorwerk",
+    "Henkel",
+    "C&A",
+    "trivago",
+    "L'Oréal",
+    "Douglas Group",
+    "StepStone",
+    "ERGO Group",
+    "Redcare Pharmacy",
+    "Hyundai",
+    "Bayer",
+    "Deutsche Telekom",
+    "DHL Group",
+    "Deichmann",
+    "ALDI Nord",
+    "E.ON",
+    "ALDI Süd",
+    "GEERS / Sonova",
+    "schauinsland-reisen",
+    "Dr. Oetker",
+    "SNIPES",
+    "Arla Foods",
+    "Primark",
+    "H&M",
+    "Amazon",
+    "Mondelēz International",
+    "Sparkasse (regional NRW)",
+    "Bain & Company",
+    "Boston Consulting Group",
+    "PwC",
+    "Deloitte",
+    "Accenture",
+    "McKinsey & Company",
+    "Nestlé",
+    "Ferrero",
+    "Müller drugstore",
+    "Takko Fashion",
+    "Tchibo",
+    "Peek & Cloppenburg Düsseldorf"
   ],
   "official_feeds": [
-    {"company": "DeepL", "type": "ashby", "board": "DeepL"},
-    {"company": "SoSafe", "type": "ashby", "board": "sosafe"},
-    {"company": "Eurowings", "type": "personio", "board": "eurowings-digital.jobs.personio.com"}
+    {
+      "company": "DeepL",
+      "type": "ashby",
+      "board": "DeepL"
+    },
+    {
+      "company": "SoSafe",
+      "type": "ashby",
+      "board": "sosafe"
+    },
+    {
+      "company": "Eurowings",
+      "type": "personio",
+      "board": "eurowings-digital.jobs.personio.com"
+    },
+    {
+      "company": "Crytek",
+      "type": "lever",
+      "board": "crytek"
+    },
+    {
+      "company": "JustWatch",
+      "type": "lever",
+      "board": "justwatch"
+    },
+    {
+      "company": "Veeva Systems",
+      "type": "lever",
+      "board": "veeva"
+    },
+    {
+      "company": "Mendix",
+      "type": "lever",
+      "board": "mendix"
+    },
+    {
+      "company": "Veepee",
+      "type": "lever",
+      "board": "veepee"
+    },
+    {
+      "company": "Butternut Box",
+      "type": "greenhouse",
+      "board": "butternutbox"
+    },
+    {
+      "company": "BRAINEFFECT",
+      "type": "greenhouse",
+      "board": "braineffectjobs"
+    },
+    {
+      "company": "A11",
+      "type": "greenhouse",
+      "board": "projectaservicesgmbhcokg"
+    },
+    {
+      "company": "plancraft",
+      "type": "ashby",
+      "board": "plancraft"
+    },
+    {
+      "company": "Codesphere",
+      "type": "ashby",
+      "board": "codesphere"
+    },
+    {
+      "company": "VÆRIDION",
+      "type": "ashby",
+      "board": "vaeridion"
+    },
+    {
+      "company": "Mollie",
+      "type": "ashby",
+      "board": "Mollie"
+    }
   ]
 }
