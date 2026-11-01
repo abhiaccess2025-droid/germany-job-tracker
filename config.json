@@ -1,6 +1,6 @@
 {
   "spreadsheet_id": "1Pv1jG6vC9RO9jsdEOf3eivdCFHhyAcXWGCYo9MuTsRs",
-  "sheet_tab": "Jobs",
+  "sheet_tab": "Job Tracker",
   "minimum_target_salary_eur": 50000,
   "max_new_jobs_per_run": 100,
   "adzuna": {
@@ -216,5 +216,46 @@
       "type": "greenhouse",
       "board": "foundry"
     }
-  ]
+  ],
+  "preferred_regions": {
+    "primary_cities": [
+      "Wuppertal",
+      "Bonn",
+      "Cologne",
+      "Köln",
+      "Düsseldorf",
+      "Essen",
+      "Duisburg"
+    ],
+    "nearby_cities": [
+      "Leverkusen",
+      "Solingen",
+      "Remscheid",
+      "Neuss",
+      "Ratingen",
+      "Hilden",
+      "Langenfeld",
+      "Mülheim",
+      "Oberhausen",
+      "Bochum",
+      "Dortmund",
+      "Krefeld",
+      "Hagen",
+      "Aachen",
+      "Monheim",
+      "Bergisch Gladbach"
+    ],
+    "include_germany_remote": true,
+    "include_other_germany_on_site": false,
+    "include_other_germany_hybrid": false
+  },
+  "search_guidance": {
+    "discovery_salary_floor_eur": 50000,
+    "priority_salary_target_eur": 80000,
+    "english_primary": true,
+    "unknown_salary_included": true,
+    "unknown_language_marked_for_review": true,
+    "estimated_salaries_are_negotiation_heuristics": true,
+    "max_weekly_new_jobs": 100
+  }
 }
