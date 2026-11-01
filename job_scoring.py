@@ -44,7 +44,7 @@ GOOD_FIT = re.compile(
     r"|demand\s*generation|e.?commerce|analytics|brand|customer\s*marketing)\b", re.I)
 SENIOR = re.compile(r"\b(head|director|vice president|vp|principal)\b",re.I)
 LEAD = re.compile(r"\b(senior|sr\.?|lead|team lead|global|regional)\b",re.I)
-CONSULTING_NAMES = {"tte strategy", "a11", "accenture", "deloitte", "pwc", "bcg"}
+CONSULTING_NAMES = {"tte strategy", "a11", "accenture", "deloitte", "pwc", "bcg", "wpp media", "omnicom media"}
 
 def normalize(s: str) -> str:
     return "".join(ch for ch in unicodedata.normalize("NFKD", (s or "").casefold())
@@ -82,9 +82,30 @@ def work_style(job, geog):
         return "On-site (confirm)"
     return "Not specified"
 
+GERMAN_TEXT_WORDS = re.compile(
+    r"\\b(?:du|dein|deine|deinen|deinem|deiner|dich|dir|uns|unsere|wir|mit|und|für|bei|sowie|"
+    r"deutsch|deutsche|deutschen|kenntnisse|kannst|bringst|erfahrung|bieten|dabei|"
+    r"stellen|verständnis|über|übernimmst|entwickelst|verantwortung|bist)\\b", re.I)
+ENGLISH_TEXT_WORDS = re.compile(
+    r"\\b(?:you|your|we|our|with|and|the|for|will|are|have|skills|experience|"
+    r"responsibilities|role|team|work|marketing|customer|business)\\b", re.I)
+GERMAN_LANGUAGE_MANDATORY = re.compile(
+    r"(?:fließend\\w*|fliessend\\w*|sehr gute\\w*|verhandlungssicher\\w*)"
+    r"[^.]{0,55}deutsch(?:kenntnisse|-\\s*und\\s*englischkenntnisse)"
+    r"|(?:kommunikation|kommunizieren)[^.]{0,65}auf\\s+deutsch"
+    r"|deutsch\\s+(?:und|&)\\s+englisch[^.]{0,65}(?:wort|schrift|beherrschst)", re.I)
+
 def language_fit(job):
-    full=(job.title or "")+"\n"+(job.description or "")
+    full=(job.title or "")+"\\n"+(job.description or "")
     if OTHER_LANGUAGE.search(job.title or ""):
+        return None
+    if GERMAN_LANGUAGE_MANDATORY.search(full):
+        return None
+    german_count=len(GERMAN_TEXT_WORDS.findall(full))
+    english_count=len(ENGLISH_TEXT_WORDS.findall(full))
+    if german_count>=14 and german_count>english_count*1.6 and not ENGLISH_REQUIRED.search(full):
+        # An English company boilerplate followed by a German job advertisement
+        # is not evidence that the role is suitable for an English-only applicant.
         return None
     if ENGLISH_REQUIRED.search(full):
         return "English-first indicated"
