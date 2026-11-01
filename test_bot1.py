@@ -39,6 +39,20 @@ class NRWBotTests(unittest.TestCase):
         self.assertEqual(language_fit(j),"English ad; confirm German")
         self.assertIsNone(score_job(job(title="Senior Growth Manager - Turkish speaking")))
 
+    def test_german_mandatory_language_is_rejected(self):
+        german = (
+            "WPP is a global media business. " +
+            "Du verfügst über fließende Deutsch- und Englischkenntnisse in Wort und Schrift. " +
+            "Du entwickelst Strategien für deine Kunden und bringst Erfahrung in Marketing mit."
+        )
+        self.assertIsNone(language_fit(job(desc=german)))
+
+    def test_german_dominant_ad_is_not_english_first(self):
+        german = ("WPP is an international employer. " +
+                  ("Wir suchen dich und du bringst Erfahrung mit für deine Kunden " +
+                   "und kannst Verantwortung bei uns übernehmen. ") * 5)
+        self.assertIsNone(language_fit(job(desc=german)))
+
     def test_priority_senior_media_first(self):
         best=score_job(job())
         other=score_job(job(title="Marketing Manager"))
