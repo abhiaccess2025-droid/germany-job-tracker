@@ -179,6 +179,42 @@
       "company": "Mollie",
       "type": "ashby",
       "board": "Mollie"
+    },
+    {
+      "company": "Oviva",
+      "type": "ashby",
+      "board": "oviva"
+    },
+    {
+      "company": "Almedia",
+      "type": "ashby",
+      "board": "almedia"
+    },
+    {
+      "company": "re:cap",
+      "type": "ashby",
+      "board": "re-cap"
+    },
+    {
+      "company": "Getsafe",
+      "type": "personio",
+      "board": "getsafe.jobs.personio.de"
+    },
+    {
+      "company": "TTE Strategy",
+      "type": "personio",
+      "board": "tte-strategy.jobs.personio.com"
+    },
+    {
+      "company": "Lovehoney Group",
+      "type": "lever",
+      "board": "lovehoneygroup",
+      "eu": true
+    },
+    {
+      "company": "Foundry",
+      "type": "greenhouse",
+      "board": "foundry"
     }
   ]
 }
