@@ -1,6 +1,15 @@
 name: Bot 1 - NRW Job Scanner
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - tracker_v2.py
+      - job_scoring.py
+      - tracker.py
+      - config.json
+      - test_bot1.py
+      - .github/workflows/weekly-jobs.yml
   schedule:
     - cron: '0 2 * * 6'
       timezone: 'Europe/Berlin'
