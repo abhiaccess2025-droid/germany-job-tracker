@@ -1,13 +1,13 @@
 # Germany-wide job discovery → your four-column Google Sheet
 
-This is a **ready-to-deploy** supplemental collector for the existing ChatGPT Friday career-page task. The existing Google Sheet and its four columns stay unchanged. The script does not apply to jobs or send your CV anywhere.
+This is a **ready-to-deploy** supplemental collector for the existing ChatGPT Friday career-page task. The existing Google Sheet and its four columns stay unchanged. The collector's job filters and employer feed coverage are conservative: the sheet is a shortlist, not a complete German job database. The script does not apply to jobs or send your CV anywhere.
 
 ## What is live and what is not
 
 - **Already live in ChatGPT:** your recurring Friday 23:30 Europe/Berlin task with all 65 named employers and Germany-wide location eligibility.
 - **Not deployed automatically:** this GitHub Actions collector. Deploying it requires a GitHub repository, a Google Sheets service account, and (optionally) Adzuna credentials.
-- **Coverage is partial, not every company in Germany:** three employer-feed candidates are preconfigured from known recruiting URLs (feed availability still needs live testing): DeepL and SoSafe (Ashby), Eurowings Digital (Personio). You can add confirmed Greenhouse/Lever/Ashby/Personio job board identifiers. For broader searches across other companies, turn on Adzuna.
-- **Adzuna links:** job-specific listing links may pass through Adzuna rather than opening the employer directly. Direct employer URLs are preferred for ATS listings.
+- **Coverage is partial, not every company in Germany:** 15 official employer-feed configurations are included (Ashby, Lever, Greenhouse, and Personio). Some feeds can fail or change, and not every one of the 65 employers has an API connection. You can add confirmed Greenhouse/Lever/Ashby/Personio job board identifiers. For broader searches across other companies, turn on Adzuna.
+- **Job links:** the collector no longer appends Adzuna `details/` URLs to your Google Sheet, since they are not verified employer application links. Adzuna is used for Germany-wide discovery; employer-hosted ATS URLs are written to the Sheet. Relevant Adzuna leads lacking official URLs appear in run statistics but are not appended.
 - **Language:** the script excludes obvious *explicit* German-language requirements and requires English-language job-description signals. It cannot guarantee that an English description means the working language is English.
 - **Salary:** screens for roles senior enough to plausibly reach €75,000 and rejects a confirmed max below that threshold. Undisclosed salaries remain eligible. Adzuna predicted salary ranges are not treated as confirmed facts.
 
@@ -20,7 +20,7 @@ This is a **ready-to-deploy** supplemental collector for the existing ChatGPT Fr
 5. (Recommended for broad Germany-wide discovery.) Get API credentials at [Adzuna](https://developer.adzuna.com/) and add repository secrets `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.
 6. Go to **Actions → Weekly Germany Job Tracker → Run workflow** for an initial test. Verify the new rows in the Sheet. The recurring run is Friday 23:30 in Berlin time, including DST adjustment.
 
-Adzuna credentials are required to enable broader Germany-wide search; Google JSON is required for unattended writing. Without Adzuna, the script checks only the configured public ATS feeds. The three preconfigured public feeds can be queried without Adzuna credentials.
+Adzuna credentials enable broader Germany-wide discovery, but Adzuna links will not be appended unless they are direct employer job URLs. Google service-account JSON is required for unattended Sheet writes. Without Adzuna, the script checks the configured public ATS feeds. The 15 configured public feeds can be queried without Adzuna credentials.
 
 ## Adding an official career feed
 
